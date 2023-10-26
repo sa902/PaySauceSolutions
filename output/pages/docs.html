@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Employees</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Docs</a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/pages/docs.html">Employees</a></li>
+                    <li><a href="/pages/sql-question.html">SQL Question</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+    <h1 class="entry-title">Employees</h1>
+    
+    <h1>{title}</h1>
+<h2>Main challenge</h2>
+<h3>About the code</h3>
+<p>The code is for a Titanium JS Alloy app. 
+Alloy is an MVC application framework by TiDev for the Titanium SDK. (https://github.com/tidev/alloy)
+Overall architecture is <strong>MVC</strong> </p>
+<p>The code provides a way to show and manage employee information, payroll settings, and related rules. It handles data retrieval, user interactions, and data saving.</p>
+<h4>Page.json</h4>
+<p>page.json provides the overall structure and configuration for the employee modules defined in a json object.</p>
+<p>While it is incomplete, the template object provides overall structure and defines things found in html such as title, favicon etc. The empty <code>body</code> section implies that this configuration file has no associated html body structure and the HTML content is stored in a differant file or dynamically generated. </p>
+<p><code>defaultPage</code> specifies URL mappings to pages. In this case, the wildcard maps everything to <code>employee-page</code>
+<code>pages</code> defines all pages in the web app, we have one, with associated models,views and controllers.
+<code>modules</code> tells us any specific modules used on the page, we can see some inohuse modules and UI libraries.
+Similiarly, <code>handlers</code> tells us any handlers to handle tasks on the page.</p>
+<p>The <code>js</code> and <code>css</code> arrays are empty but would contain any files relevant to the module.
+<code>sockets</code> shows that web sockets are not used  here.</p>
+<h3>Issues</h3>
+<p>potentially outdated version of tidev? 
+Lost official support and became community driven. This can have pro's and con's
+a major con being that updates can be slow due to being community driven and non-profit funded</p>
+<h4>immediate issues</h4>
+<ol>
+<li>Uses outdated class style - should upgrade to ES6 class style</li>
+<li>Use of Var, in  modern js we want to use <code>const</code> and <code>let</code></li>
+<li>since version 10, titanium supports async functions so upgrade as required  </li>
+<li>upadate underscore to lodash?? </li>
+<li>Nothing is going to show on iphone?</li>
+<li>we can remove async library in favor of propmises or async/await. (added in es2015 and es2017)</li>
+</ol>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                            <li><a href="solutions.md">solutions</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
