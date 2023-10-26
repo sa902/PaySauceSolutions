@@ -1,0 +1,27 @@
+
+<div class="twelve wide column">
+
+    <div class="ui two column stackable grid">
+        <div class="column">
+            <div class="ui search">
+                <div class="ui icon input">
+                    <input id="employee-search" handler-events="input|debounce:employees-search" class="prompt" type="text" placeholder="Search Employees..." value="{search}">
+                    <i class="search icon"></i>
+                </div>
+                <div class="results"></div>
+            </div>
+        </div>
+        <div class="column">
+            <div id="toggle-terminated" class="ui toggle checkbox margin top five">
+                <input type="checkbox" name="termintaed" handler-events="input:update-terminated">
+                <label>Show terminated employees</label>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<div class="right aligned four wide column">
+    {> column-selector /}    
+</div>

@@ -1,0 +1,52 @@
+{  
+   "template": {
+        "path": null,
+        "body": null,
+        "container": null,
+        "context": {            
+            "title": "Employees | PaySauce",
+            "favicon": "/paysauce-platform-client/img/favicon.png",
+            "favicontype": "image/png",
+            "initialize": "/platform/GetPage",
+            "version": "0.97",
+            "ajaxClass": "loading",
+            "ajaxPrepend": "/platform",
+            "gtag": "UA-77864610-2"     
+        } 
+   },
+   "js":[
+      
+   ],
+   "css":[  
+
+   ],
+   "modules":[  
+      "/honeycomb-spa/base",
+      "/honeycomb-semantic-ui/modules",
+      "/honeycomb-semantic-ui/collections",
+      "/paysauce-platform-client/ui",
+      "/paysauce-account/ui"
+  ],
+   "handlers":[  
+      "default-handler",
+      "default-conversion-handler",
+      "default-validation-handler",
+      "default-ui-handler",
+      "view-handler",
+      "profile-conversion-handler"
+   ],
+   "defaultPage":{  
+      "*":"employees-page"
+   },
+   "pages":{  
+      "employees-page":{  
+         "controller":"flow-controller",
+         "model":"employees-page-model",
+         "handlers": ["topbar-handler", "initialize-handler", "page-handler"]
+      }
+   },
+   "links":{  
+
+   },
+   "sockets":false
+}
