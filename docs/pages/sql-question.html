@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>SQL Question</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Docs</a></h1>
+                <nav><ul>
+                    <li><a href="/pages/docs.html">Employees</a></li>
+                    <li class="active"><a href="/pages/sql-question.html">SQL Question</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+    <h1 class="entry-title">SQL Question</h1>
+    
+    <h3>SQL Question Test</h3>
+<p>This SQL query appears to be selecting data from one or more tables to retrieve distinct combinations of 'period_id' and 'employee_id' that meet certain conditions. Let's break it down step by step:</p>
+<ol>
+<li>The inner query:</li>
+<li>This part of the query is enclosed in parentheses and acts as a subquery.</li>
+<li>It selects distinct combinations of 'period_id' and 'employee_id' from two tables, 'period' (aliased as 'p') and 'txn' (aliased as 't').</li>
+<li>It only selects rows where the 'state' column in the 'period' table is equal to 1.</li>
+<li>
+<p>It adds a computed column 'type' with a constant value of 'PT_AC_ACC_LEAVE' for each row selected from 'txn'.</p>
+</li>
+<li>
+<p>The subquery alias 'op':</p>
+</li>
+<li>
+<p>The results of the inner query are aliased as 'op'.</p>
+</li>
+<li>
+<p>The main query:</p>
+</li>
+<li>It selects distinct combinations of 'period_id' and 'employee_id' from the 'op' subquery.</li>
+<li>It performs a left join with the 'txn' table (aliased as 't') based on three conditions:<ul>
+<li>'op.period_id' is equal to 't.period_id'.</li>
+<li>'op.employee_id' is equal to 't.employee_id'.</li>
+<li>'op.type' is equal to 't.type'.</li>
+</ul>
+</li>
+<li>
+<p>The purpose of this left join is to find matching rows in the 'txn' table that have the same 'period_id', 'employee_id', and 'type'. The 'left join' means that all rows from 'op' are retained, and matching rows from 'txn' are included.</p>
+</li>
+<li>
+<p>The WHERE clause:</p>
+</li>
+<li>It filters the results to include only rows where 't.type' is null.</li>
+<li>This condition effectively filters out the rows where a match was found in the 'txn' table (where 't.type' is not null), leaving only those combinations of 'period_id' and 'employee_id' from 'op' that don't have corresponding entries in 'txn' with a non-null 'type'.</li>
+</ol>
+<p>In summary, the query retrieves distinct combinations of 'period_id' and 'employee_id' from the 'op' subquery, but only those combinations that don't have corresponding entries in the 'txn' table with a non-null 'type'. This could be used, for example, to find 'period_id' and 'employee_id' pairs that are missing certain types of entries in the 'txn' table.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">-- Create the &#39;period&#39; table</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">period</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="k">state</span><span class="w"> </span><span class="nb">INT</span>
+<span class="p">);</span>
+
+<span class="c1">-- Create the &#39;txn&#39; table</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">period_id</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">employee_id</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="c1">-- Insert sample data into the &#39;period&#39; table</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="k">period</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">state</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="c1">-- Insert sample data into the &#39;txn&#39; table</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="p">(</span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">employee_id</span><span class="p">,</span><span class="w"> </span><span class="k">type</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">103</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_OTHER_TYPE&#39;</span><span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="k">period</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">state</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">-- Insert additional sample data into the &#39;txn&#39; table</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="p">(</span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">employee_id</span><span class="p">,</span><span class="w"> </span><span class="k">type</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_OTHER_TYPE&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">103</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">104</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_OTHER_TYPE&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">105</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">);</span>
+<span class="c1">-- The provided query</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="n">employee_id</span>
+<span class="k">FROM</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">employee_id</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">type</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="k">period</span><span class="w"> </span><span class="n">p</span>
+<span class="w">    </span><span class="k">JOIN</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">period_id</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="k">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">)</span><span class="w"> </span><span class="n">op</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="n">period_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">period_id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="n">employee_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">employee_id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="k">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="k">type</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="k">type</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
+</code></pre></div>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                            <li><a href="solutions.md">solutions</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

@@ -3,6 +3,7 @@ SITENAME = 'Docs'
 SITEURL = ''
 
 PATH = 'content'
+OUTPUT_PATH = 'docs'
 
 TIMEZONE = 'Europe/Rome'
 # STATIC_PATHS = ['blog', 'downloads']
