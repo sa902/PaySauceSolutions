@@ -2,7 +2,6 @@ Title: Employees
 Slug: docs
 Authors: Sam Anderson
 Summary: Short version for index and feeds
-
 # {title}
 
 ## Main challenge
