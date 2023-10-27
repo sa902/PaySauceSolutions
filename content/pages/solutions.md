@@ -1,6 +1,8 @@
 Title: Overview
 Slug: overview
 Authors: Sam Anderson
+Category: test
+
 sortorder: 1
 Summary: Short version for index and feeds
 

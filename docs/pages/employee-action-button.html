@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Employee Action button</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Candidate Test PaySauce</a></h1>
+                <nav><ul>
+                    <li><a href="/pages/add-employee.html">Add Employee</a></li>
+                    <li class="active"><a href="/pages/employee-action-button.html">Employee Action button</a></li>
+                    <li><a href="/pages/issues.html">Issues</a></li>
+                    <li><a href="/pages/overview.html">Overview</a></li>
+                    <li><a href="/pages/sql-question.html">SQL Question</a></li>
+                    <li><a href="/pages/terminated-employees.html">Terminated Employees</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+    <h1 class="entry-title">Employee Action button</h1>
+    
+    <p>Lets talk about adding a new method of interaction with the employee list, specifically, filtering for recently hired employees. </p>
+<p>To do this we have to edit 3 things, the model, view and controller.</p>
+<h2>updating the view</h2>
+<p>We can update the view in one of two ways</p>
+<h3>Adding a column</h3>
+<div class="highlight"><pre><span></span><code><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;twelve wide column&quot;</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui three column stackable grid&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;column&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui search&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui icon input&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;employee-search&quot;</span> <span class="na">handler-events</span><span class="o">=</span><span class="s">&quot;input|debounce:employees-search&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;prompt&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;Search Employees...&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{search}&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">i</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;search icon&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">i</span><span class="p">&gt;</span>
+                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;results&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;column&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;toggle-terminated&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui toggle checkbox margin top five&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;termintaed&quot;</span> <span class="na">handler-events</span><span class="o">=</span><span class="s">&quot;input:update-terminated&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">label</span><span class="p">&gt;</span>Show terminated employees<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;column&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;toggle-newHires&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui toggle checkbox margin top five&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;newHire&quot;</span> <span class="na">handler-events</span><span class="o">=</span><span class="s">&quot;input:update-newHires&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">label</span><span class="p">&gt;</span>Show New Hires<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;right aligned four wide column&quot;</span><span class="p">&gt;</span>
+    {&gt; column-selector /}    
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h3>Adding a row</h3>
+<div class="highlight"><pre><span></span><code><span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;twelve wide column&quot;</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui two column stackable grid&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;column&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui search&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui icon input&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;employee-search&quot;</span> <span class="na">handler-events</span><span class="o">=</span><span class="s">&quot;input|debounce:employees-search&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;prompt&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;Search Employees...&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{search}&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">i</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;search icon&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">i</span><span class="p">&gt;</span>
+                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;results&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;column&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;row&quot;</span><span class="p">&gt;</span>
+               <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;toggle-terminated&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui toggle checkbox margin top five&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;termintaed&quot;</span> <span class="na">handler-events</span><span class="o">=</span><span class="s">&quot;input:update-terminated&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">label</span><span class="p">&gt;</span>Show terminated employees<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+                 <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;toggle-newHires&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;ui toggle checkbox margin top five&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;newHire&quot;</span> <span class="na">handler-events</span><span class="o">=</span><span class="s">&quot;input:update-newHires&quot;</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">label</span><span class="p">&gt;</span>Show New Hires<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+                <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span> 
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;right aligned four wide column&quot;</span><span class="p">&gt;</span>
+    {&gt; column-selector /}    
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+</code></pre></div>
+
+<h2>Updating the controller</h2>
+<p>We need to add a new controller function. This will be similiar to the toggle terminated function</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;update-newHires&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">sender</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">HoneycombApplication</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="s1">&#39;employees-table-model&#39;</span><span class="p">].</span><span class="nx">execute</span><span class="p">(</span><span class="s1">&#39;setShowNewHires&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="nx">sender</span><span class="p">.</span><span class="nx">control</span><span class="p">.</span><span class="nx">prop</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">)]);</span>
+<span class="w">    </span><span class="nx">sender</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">executeFunction</span><span class="p">(</span><span class="s1">&#39;fetch-and-populate-employees&#39;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The functionality is pretty much the same as the set terminated function</p>
+<h2>Updating the model</h2>
+<p>Finally, we have to update the model.</p>
+<div class="highlight"><pre><span></span><code><span class="nx">setShowNewHires</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">context</span><span class="p">.</span><span class="nx">setShowNewHires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">0</span>
+</code></pre></div>
+
+<h2>Final words</h2>
+<p>Notice how we have used javascripts new arrow functions to improve readability.</p>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://wip-porfolio.replit.app/">Sam Anderson</a></li>
+                            <li><a href="https://flatmate-findr.replit.app/">Findr - a React + AWS + Node, hand drawn website to find flat shares </a></li>
+                            <li><a href="https://github.com/sa902">sa902 github</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
