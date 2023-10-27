@@ -1,4 +1,4 @@
-name: Pelican site CI
+name: Pelican site build thing
 
 on:
   # Trigger the workflow on push or pull request,
