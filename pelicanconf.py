@@ -21,11 +21,9 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('Pelican', 'https://getpelican.com/'),
-         ('Python.org', 'https://www.python.org/'),
-         ('Jinja2', 'https://palletsprojects.com/p/jinja/'),
-         ('You can modify those links in your config file', '#'),
-         ('solutions', 'solutions.md'))
+LINKS = (('Sam Anderson', 'https://wip-porfolio.replit.app/'),
+         ('Findr - a React + AWS + Node, hand drawn website to find flat shares ', 'https://www.python.org/'),
+         ('sa902 github', 'https://github.com/sa902'))
 
 # Social widget
 SOCIAL = (('You can add links in your config file', '#'),
