@@ -1,8 +1,9 @@
-Title: Employees
-Slug: docs
+Title: Overview
+Slug: overview
 Authors: Sam Anderson
+sortorder: 1
 Summary: Short version for index and feeds
-# {title}
+
 
 ## Main challenge
 ### About the code
@@ -25,15 +26,5 @@ Similiarly, `handlers` tells us any handlers to handle tasks on the page.
 The `js` and `css` arrays are empty but would contain any files relevant to the module.
 `sockets` shows that web sockets are not used  here.
 
-### Issues
-potentially outdated version of tidev? 
-Lost official support and became community driven. This can have pro's and con's
-a major con being that updates can be slow due to being community driven and non-profit funded
-#### immediate issues
-1. Uses outdated class style - should upgrade to ES6 class style
-1. Use of Var, in  modern js we want to use ```const``` and ```let```
-1. since version 10, titanium supports async functions so upgrade as required  
-1. upadate underscore to lodash?? 
-1. Nothing is going to show on iphone?
-1. we can remove async library in favor of propmises or async/await. (added in es2015 and es2017)
+
 

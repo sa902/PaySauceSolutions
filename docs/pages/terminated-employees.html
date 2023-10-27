@@ -10,9 +10,11 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="/">Docs</a></h1>
+                <h1><a href="/">Candidate Test PaySauce</a></h1>
                 <nav><ul>
-                    <li><a href="/pages/docs.html">Employees</a></li>
+                    <li><a href="/pages/add-employee.html">Add Employee</a></li>
+                    <li><a href="/pages/issues.html">Issues</a></li>
+                    <li><a href="/pages/overview.html">Overview</a></li>
                     <li><a href="/pages/sql-question.html">SQL Question</a></li>
                     <li class="active"><a href="/pages/terminated-employees.html">Terminated Employees</a></li>
                 </ul></nav>
@@ -21,25 +23,38 @@
     <h1 class="entry-title">Terminated Employees</h1>
     
     <p>terminated employees are shown in a table
-They arecontrolled via checkbox located in <code>list-actions.html</code> file</p>
+They arecontrolled via checkbox located in <code>list-actions.html</code> file
+On toggle, it calls the <code>input:update-terminated</code> function located in the <code>page-handler</code> </p>
+<h3>Page Handler</h3>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="s2">&quot;update-terminated&quot;</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">sender</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nx">HoneycombApplication</span><span class="p">.</span><span class="nx">models</span><span class="p">[</span><span class="s1">&#39;employees-table-model&#39;</span><span class="p">].</span><span class="nx">execute</span><span class="p">(</span><span class="s1">&#39;setShowTerminated&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="nx">sender</span><span class="p">.</span><span class="nx">control</span><span class="p">.</span><span class="nx">prop</span><span class="p">(</span><span class="s1">&#39;checked&#39;</span><span class="p">)]);</span>
+<span class="w">        </span><span class="nx">sender</span><span class="p">.</span><span class="nx">view</span><span class="p">.</span><span class="nx">executeFunction</span><span class="p">(</span><span class="s1">&#39;fetch-and-populate-employees&#39;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">},</span>
+</code></pre></div>
+
+<p>In this function <code>update-terminated</code> acts as a key which calls the anonmyous function associated with it.
+<code>sender</code> is the object that triggered the event and we extract the status of the checked box from it.</p>
+<p><br> 
+This function updates the <code>showTerminated</code> context in the associated model <code>employee-table-model</code> based on the value of the checked property extracted from <code>sender</code>.</p>
+<p>It then calls <code>fetch-and-populate-employees</code> function to update the table view with newly fetched data.</p>
+<h3>fetch-and-populate-employees</h3>
+<p>Once all of this has happened, this function makes a call to the backend using any filters set on the <code>employee-table-model</code> and on success populates it into the table and refreshes the table.</p>
+<h3>employees-table-model</h3>
+<p>There are some potential side effects to this code. We might want to use some type checking to ensure that the value of <code>value</code> takes on the value. side effects could occur if it's undefined or really anyother type. </p>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nx">setShowTerminated</span><span class="o">:</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="nx">context</span><span class="p">.</span><span class="nx">showTerminated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">0</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span>
+</code></pre></div>
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
                         <ul>
                             <li><a href="https://wip-porfolio.replit.app/">Sam Anderson</a></li>
-                            <li><a href="https://www.python.org/">Findr - a React + AWS + Node, hand drawn website to find flat shares </a></li>
+                            <li><a href="https://flatmate-findr.replit.app/">Findr - a React + AWS + Node, hand drawn website to find flat shares </a></li>
                             <li><a href="https://github.com/sa902">sa902 github</a></li>
                         </ul>
                 </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-
-                            <li><a href="#">You can add links in your config file</a></li>
-                            <li><a href="#">Another social link</a></li>
-                        </ul>
-                </div><!-- /.social -->
         </section><!-- /#extras -->
 
         <footer id="contentinfo" class="body">
