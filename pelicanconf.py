@@ -5,7 +5,7 @@ SITEURL = ''
 PATH = 'content'
 OUTPUT_PATH = 'docs'
 
-# DISPLAY_PAGES_ON_MENU = False
+DISPLAY_PAGES_ON_MENU = False
 TIMEZONE = 'Europe/Rome'
 # USE_FOLDER_AS_CATEGORY = True
 # PAGE_PATHS = ['pages']
@@ -13,9 +13,9 @@ TIMEZONE = 'Europe/Rome'
 # ARTICLE_PATHS = ['pages']
 # ARTICLE_SAVE_AS = '{date:%Y}/{slug}.html'
 # ARTICLE_URL = '{date:%Y}/{slug}.html'
-
+PAGE_ORDER_BY = 'order'
 DEFAULT_LANG = 'en'
-MENU_ITEMS=['Overview']
+MENUITEMS=[('Home', '/')]
 # Feed generation is usually not desired when developing
 FEED_ALL_ATOM = None
 

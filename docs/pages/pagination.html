@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Pagination</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Candidate Test PaySauce</a></h1>
+                <nav><ul>
+                    <li><a href="/">Home</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+    <h1 class="entry-title">Pagination</h1>
+    
+    <p>Pagination allows us to split results into smaller lists to easier display on a screen and control the amount recieved from an endpoint. It allows easier control in the front end.</p>
+<h3>FE vs BE</h3>
+<p>There are two ways to handle pagination logic, on the front end and on the back end. 
+<br></p>
+<h4>FE pagination</h4>
+<p>Making a request to the server and paginating the recieved response. This can have benefits such as making only one call to the backend and desinging a simpler back end. 
+all the data is present in the front end so searching, filtreing, reducing are possible on the whole data set without calling the backend multiple times. </p>
+<p>However, there could be potentially thounsands of results and sorting, handling paginations or filtering could be costly operations to handle in browser. 
+In general, this is not the most effective method.</p>
+<h4>BE pagination</h4>
+<p>Handling pagination on the backend and taking parameters that specify pagination criteria.
+For instance, passing a <code>pagination</code> object with current page, amount per page and any other relavant information. This is generally considered the best practice approach.</p>
+<p>Once example library is <code>knex-paginate</code> Which requires information of the following form</p>
+<div class="highlight"><pre><span></span><code><span class="nx">paginate</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">currentPage</span><span class="o">:</span><span class="w"> </span><span class="mf">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">perPage</span><span class="o">:</span><span class="mf">6</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>All the business logic is handled on the back end and the front end recieves 6 responses as well as information pertaining to currentPage, total, amount of pages, last page etc.</p>
+<h4>Pagination in this code.</h4>
+<p>Pagination in this code is handled on the backend. 
+In the <code>GetEmployee.js</code> backend class if the request parameters contains no information about pagination it will set to a default. </p>
+<div class="highlight"><pre><span></span><code><span class="w">        </span><span class="nx">pagination</span><span class="o">:</span><span class="w"> </span><span class="o">!</span><span class="nx">_</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">parameters</span><span class="p">.</span><span class="nx">pagination</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">parameters</span><span class="p">.</span><span class="nx">pagination</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">limit</span><span class="o">:</span><span class="w"> </span><span class="mf">10</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">sort</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;record_id&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">pk</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;record_id&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">direction</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;asc&#39;</span><span class="w">    </span>
+<span class="w">        </span><span class="p">},</span>
+</code></pre></div>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://wip-porfolio.replit.app/">Sam Anderson</a></li>
+                            <li><a href="https://flatmate-findr.replit.app/">Findr - a React + AWS + Node, hand drawn website to find flat shares </a></li>
+                            <li><a href="https://github.com/sa902">sa902 github</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

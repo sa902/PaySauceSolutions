@@ -1,6 +1,7 @@
 Title: SQL Question
 Slug: sql-question
 Authors: Sam Anderson
+Order:2
 Summary: Discussion on the sql question
 ### SQL Question Test
 This SQL query appears to be selecting data from one or more tables to retrieve distinct combinations of 'period_id' and 'employee_id' that meet certain conditions. Let's break it down step by step:

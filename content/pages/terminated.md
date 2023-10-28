@@ -1,6 +1,7 @@
 Title: Terminated Employees 
 Slug: terminated-employees
 Authors: Sam Anderson
+Order: 6
 Summary: How the code shows terminated emplooyees
 
 

@@ -1,6 +1,7 @@
 Title: Employee Action button
 Slug: employee-action-button
 Authors: Sam Anderson
+Order: 4
 Summary: where to add employee action buttons
 
 Lets talk about adding a new method of interaction with the employee list, specifically, filtering for recently hired employees. 
