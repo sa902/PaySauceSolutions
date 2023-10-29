@@ -98,8 +98,54 @@ Finally, we have to update the model.
 ``` javascript 
 setShowNewHires: (value) => this.context.setShowNewHires = value ? 1 : 0
 ``` 
+### Finally
+We have used JS arrow functions to improve readability.
 
-## Final words
-Notice how we have used javascripts new arrow functions to improve readability.
+## Adding an Action Button in the table
+In hte `employee-table-model.js` we can simply edit the context object to add a new event. In the `columns` array, find the column named `actions` and add a new event handler there. We would need to add corresponding UI and controller configurations to handle the click event. 
+### Example
+``` javascript
+{
+			name: 'Actions',
+			sortable: false,
+			id: 'actions',
+			display: {
+				headerclass: 'no-sort right aligned',
+				dataclass: 'right aligned actions',
+				view: 'table-cells:cell-value-actions',
+				context: {
+					items: [{
+						id: 'add-note',
+						events: [{
+							bind: 'click',
+							id: 'click-add-note'
+						}]
+					}, {
+						id: 'send-message',
+						events: [{
+							bind: 'click',
+							id: 'click-send-message'
+						}]
+					}, {
+						id: 'send-link-invite',						
+						events: [{
+							bind: 'click',
+							id: 'click-send-link-invite'
+						}]
+					},
+                    {
+						id: 'send-friend-request',						
+						events: [{
+							bind: 'click',
+							id: 'click-send-friend-request'
+						}]
+					}]
+				}
+			}
+		}
+```        
+Here we have added an action to send a friend request.
+
+
 
 

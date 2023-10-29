@@ -41,3 +41,6 @@ In the `GetEmployee.js` backend class if the request parameters contains no info
             direction: 'asc'    
         },
 ```
+The front end has two views, one in a table, which is paginated, otherwise it could be thousands of rows long. And another view that, from my understanding, is an individual employee view with buttons to move move +/- 1 through the list.
+
+The pagination requirements are passed through to the relevant models and controllers and ultimately used in the BE request. 

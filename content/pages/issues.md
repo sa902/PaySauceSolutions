@@ -1,4 +1,4 @@
-Title: Issues
+Title: Issues & Improvements 
 Slug: issues
 Authors: Sam Anderson
 Order: 5

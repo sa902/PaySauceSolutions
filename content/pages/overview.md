@@ -13,7 +13,7 @@ Overall architecture is **MVC**
 
 The code provides a way to show and manage employee information, payroll settings, and related rules. It handles data retrieval, user interactions, and data saving.
 
-There are two views for viewing information about employees, pagination view and table view. These are escribed in the `employees-views-model` file.
+There are two views for viewing information about employees, pagination view and table view. These are described in the `employees-views-model` file.
 
 #### Page.json
 page.json provides the overall structure and configuration for the employee modules defined in a json object.

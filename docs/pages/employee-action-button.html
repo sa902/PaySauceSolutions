@@ -106,8 +106,50 @@
 <div class="highlight"><pre><span></span><code><span class="nx">setShowNewHires</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="nx">value</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="nx">context</span><span class="p">.</span><span class="nx">setShowNewHires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">value</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mf">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">0</span>
 </code></pre></div>
 
-<h2>Final words</h2>
-<p>Notice how we have used javascripts new arrow functions to improve readability.</p>
+<h2>Adding an Action Button in the table</h2>
+<p>In hte <code>employee-table-model.js</code> we can simply edit the context object to add a new event. In the <code>columns</code> array, find the column named <code>actions</code> and add a new event handler there. We would need to add corresponding UI and controller configurations to handle the click event. </p>
+<h3>Example</h3>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">            </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Actions&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">sortable</span><span class="o">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;actions&#39;</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">display</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">headerclass</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;no-sort right aligned&#39;</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">dataclass</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;right aligned actions&#39;</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">view</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;table-cells:cell-value-actions&#39;</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">context</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">                        </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;add-note&#39;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">                            </span><span class="nx">bind</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;click&#39;</span><span class="p">,</span>
+<span class="w">                            </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;click-add-note&#39;</span>
+<span class="w">                        </span><span class="p">}]</span>
+<span class="w">                    </span><span class="p">},</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;send-message&#39;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">                            </span><span class="nx">bind</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;click&#39;</span><span class="p">,</span>
+<span class="w">                            </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;click-send-message&#39;</span>
+<span class="w">                        </span><span class="p">}]</span>
+<span class="w">                    </span><span class="p">},</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;send-link-invite&#39;</span><span class="p">,</span><span class="w">                     </span>
+<span class="w">                        </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">                            </span><span class="nx">bind</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;click&#39;</span><span class="p">,</span>
+<span class="w">                            </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;click-send-link-invite&#39;</span>
+<span class="w">                        </span><span class="p">}]</span>
+<span class="w">                    </span><span class="p">},</span>
+<span class="w">                    </span><span class="p">{</span>
+<span class="w">                        </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;send-friend-request&#39;</span><span class="p">,</span><span class="w">                      </span>
+<span class="w">                        </span><span class="nx">events</span><span class="o">:</span><span class="w"> </span><span class="p">[{</span>
+<span class="w">                            </span><span class="nx">bind</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;click&#39;</span><span class="p">,</span>
+<span class="w">                            </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;click-send-friend-request&#39;</span>
+<span class="w">                        </span><span class="p">}]</span>
+<span class="w">                    </span><span class="p">}]</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+</code></pre></div>
+
+<p>Here we have added an action to send a friend request.</p>
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
