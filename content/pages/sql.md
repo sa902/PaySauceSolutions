@@ -3,81 +3,98 @@ Slug: sql-question
 Authors: Sam Anderson
 Order:2
 Summary: Discussion on the sql question
-### SQL Question Test
-This SQL query appears to be selecting data from one or more tables to retrieve distinct combinations of 'period_id' and 'employee_id' that meet certain conditions. Let's break it down step by step:
 
-1. The inner query:
-   - This part of the query is enclosed in parentheses and acts as a subquery.
-   - It selects distinct combinations of 'period_id' and 'employee_id' from two tables, 'period' (aliased as 'p') and 'txn' (aliased as 't').
-   - It only selects rows where the 'state' column in the 'period' table is equal to 1.
-   - It adds a computed column 'type' with a constant value of 'PT_AC_ACC_LEAVE' for each row selected from 'txn'.
-
-2. The subquery alias 'op':
-   - The results of the inner query are aliased as 'op'.
-
-3. The main query:
-   - It selects distinct combinations of 'period_id' and 'employee_id' from the 'op' subquery.
-   - It performs a left join with the 'txn' table (aliased as 't') based on three conditions:
-     - 'op.period_id' is equal to 't.period_id'.
-     - 'op.employee_id' is equal to 't.employee_id'.
-     - 'op.type' is equal to 't.type'.
-   - The purpose of this left join is to find matching rows in the 'txn' table that have the same 'period_id', 'employee_id', and 'type'. The 'left join' means that all rows from 'op' are retained, and matching rows from 'txn' are included.
-
-4. The WHERE clause:
-   - It filters the results to include only rows where 't.type' is null.
-   - This condition effectively filters out the rows where a match was found in the 'txn' table (where 't.type' is not null), leaving only those combinations of 'period_id' and 'employee_id' from 'op' that don't have corresponding entries in 'txn' with a non-null 'type'.
-
-In summary, the query retrieves distinct combinations of 'period_id' and 'employee_id' from the 'op' subquery, but only those combinations that don't have corresponding entries in the 'txn' table with a non-null 'type'. This could be used, for example, to find 'period_id' and 'employee_id' pairs that are missing certain types of entries in the 'txn' table.
-
+### ReWrite
+1. The inner query, aliased op
+The first thing is to select two columns from (`t.period_id` `t.employee_id`) from `period` table with distinct values and create a new column with a constant value. `Distinct` removes any duplication. 
+This has 3 columns, `period_id`	`employee_id` and `type`. The values in this table are all unique rows whose state is 1  in the period table and displays the employee id aswell as period id from txn table.
+Here is some example code and output
 ``` sql
--- Create the 'period' table
+
 CREATE TABLE period (
     id INT PRIMARY KEY,
     state INT
 );
 
--- Create the 'txn' table
+
 CREATE TABLE txn (
+    txn_id INT PRIMARY KEY,
     period_id INT,
-    employee_id INT,
-    type VARCHAR(50)
+    employee_id varchar(128)
 );
 
--- Insert sample data into the 'period' table
-INSERT INTO period (id, state) VALUES
-    (1, 1),
-    (2, 0),
-    (3, 1),
-    (4, 1);
-
--- Insert sample data into the 'txn' table
-INSERT INTO txn (period_id, employee_id, type) VALUES
-    (1, 101, 'PT_AC_ACC_LEAVE'),
-    (2, 102, 'PT_AC_ACC_LEAVE'),
-    (3, 101, 'PT_AC_ACC_LEAVE'),
-    (4, 103, 'PT_OTHER_TYPE');
 
 INSERT INTO period (id, state) VALUES
-    (5, 0),
-    (6, 1),
-    (7, 1),
-    (8, 0);
+(1, 1),
+(2, 1),
+(3, 2),
+(4, 4);
 
--- Insert additional sample data into the 'txn' table
-INSERT INTO txn (period_id, employee_id, type) VALUES
-    (5, 102, 'PT_OTHER_TYPE'),
-    (6, 103, 'PT_AC_ACC_LEAVE'),
-    (7, 104, 'PT_OTHER_TYPE'),
-    (8, 105, 'PT_AC_ACC_LEAVE');
--- The provided query
-SELECT DISTINCT op.period_id, op.employee_id
-FROM (
-    SELECT DISTINCT t.period_id, t.employee_id, 'PT_AC_ACC_LEAVE' AS type
+
+INSERT INTO txn (txn_id, period_id, employee_id) VALUES
+(101, 1, "Sam"),
+(102, 1, "Josh"),
+(103, 2, "Sam"),
+(104, 3, "Greg"),
+(105, 1, "Alex"),
+(106, 4, "Josh");
+
+
+
+  SELECT DISTINCT t.period_id, t.employee_id, 'PT_AC_ACC_LEAVE' AS type
     FROM period p
     JOIN txn t ON p.id = t.period_id
     WHERE p.state = 1
-) op
-LEFT JOIN txn t ON op.period_id = t.period_id AND op.employee_id = t.employee_id AND op.type = t.type
-WHERE t.type IS NULL;
+``` 
 
-```
+|  Period_id | employee_id  | type  |
+|--:|---|---|
+|1   |sam   |PT_AC_ACC_LEAVE  |
+| 1  | josh   | PT_AC_ACC_LEAVE   |
+| 2  |  sam | PT_AC_ACC_LEAVE  |
+|  1 | alex  |  PT_AC_ACC_LEAVE |
+
+You can see that it has excluded anyone whose state is greater than 1, namely greg and and a josh. 
+We then select any distinct `period_id`, `op.employee_id` from our inner query
+
+## Left Join
+First, we need to modify our previous tables to include a type. 
+
+``` sql
+CREATE TABLE txn (
+    txn_id INT PRIMARY KEY,
+    period_id INT,
+    employee_id varchar(128),
+    type varchar(128)
+);
+
+INSERT INTO txn (txn_id, period_id, employee_id, type) VALUES
+(101, 1, 'Sam', 'PT_AC_ACC_LEAVE'),
+(102, 1, 'Josh', 'PT_AC_ACC_LEAVE'),
+(103, 2, 'Sam', 'OtherType'),
+(104, 3, 'Greg', 'PT_AC_ACC_LEAVE'),
+(105, 1, 'Alex', 'literallyAnyOtherType'),
+(106, 4, 'Josh', 'PT_AC_ACC_LEAVE'),
+(107, 5, 'Sophie', 'PT_AC_ACC_LEAVE'),
+(108, 1, 'Emma', NULL),
+(109, 6, 'Liam', 'NULL');
+
+``` 
+
+The left join joins rows where the `period_id,` `employee_id,` and `type` match between the `op` subquery and the `txn` table.
+The left join ensures all items from `op` are added and only matching rows from `txn` are added.
+The outerquery retrieves rows from the 'op' subquery that do not have a corresponding record in the 'txn' table based on the 'period_id,' 'employee_id,' and 'type' criteria. It selects those rows where 't.type' is NULL, which indicates the absence of matching records in the 'txn' table.
+
+
+
+Running our final completed query gives us these results!
+| period_id | employee_id|
+|--:|---|
+|2| sam| 
+|1|alex| 
+|1|emma|
+
+#### A simpler solution? 
+
+
+

@@ -18,92 +18,113 @@
 <section id="content" class="body">
     <h1 class="entry-title">SQL Question</h1>
     
-    <h3>SQL Question Test</h3>
-<p>This SQL query appears to be selecting data from one or more tables to retrieve distinct combinations of 'period_id' and 'employee_id' that meet certain conditions. Let's break it down step by step:</p>
+    <h3>ReWrite</h3>
 <ol>
-<li>The inner query:</li>
-<li>This part of the query is enclosed in parentheses and acts as a subquery.</li>
-<li>It selects distinct combinations of 'period_id' and 'employee_id' from two tables, 'period' (aliased as 'p') and 'txn' (aliased as 't').</li>
-<li>It only selects rows where the 'state' column in the 'period' table is equal to 1.</li>
-<li>
-<p>It adds a computed column 'type' with a constant value of 'PT_AC_ACC_LEAVE' for each row selected from 'txn'.</p>
-</li>
-<li>
-<p>The subquery alias 'op':</p>
-</li>
-<li>
-<p>The results of the inner query are aliased as 'op'.</p>
-</li>
-<li>
-<p>The main query:</p>
-</li>
-<li>It selects distinct combinations of 'period_id' and 'employee_id' from the 'op' subquery.</li>
-<li>It performs a left join with the 'txn' table (aliased as 't') based on three conditions:<ul>
-<li>'op.period_id' is equal to 't.period_id'.</li>
-<li>'op.employee_id' is equal to 't.employee_id'.</li>
-<li>'op.type' is equal to 't.type'.</li>
-</ul>
-</li>
-<li>
-<p>The purpose of this left join is to find matching rows in the 'txn' table that have the same 'period_id', 'employee_id', and 'type'. The 'left join' means that all rows from 'op' are retained, and matching rows from 'txn' are included.</p>
-</li>
-<li>
-<p>The WHERE clause:</p>
-</li>
-<li>It filters the results to include only rows where 't.type' is null.</li>
-<li>This condition effectively filters out the rows where a match was found in the 'txn' table (where 't.type' is not null), leaving only those combinations of 'period_id' and 'employee_id' from 'op' that don't have corresponding entries in 'txn' with a non-null 'type'.</li>
+<li>The inner query, aliased op
+The first thing is to select two columns from (<code>t.period_id</code> <code>t.employee_id</code>) from <code>period</code> table with distinct values and create a new column with a constant value. <code>Distinct</code> removes any duplication. 
+This has 3 columns, <code>period_id</code> <code>employee_id</code> and <code>type</code>. The values in this table are all unique rows whose state is 1  in the period table and displays the employee id aswell as period id from txn table.
+Here is some example code and output</li>
 </ol>
-<p>In summary, the query retrieves distinct combinations of 'period_id' and 'employee_id' from the 'op' subquery, but only those combinations that don't have corresponding entries in the 'txn' table with a non-null 'type'. This could be used, for example, to find 'period_id' and 'employee_id' pairs that are missing certain types of entries in the 'txn' table.</p>
-<div class="highlight"><pre><span></span><code><span class="c1">-- Create the &#39;period&#39; table</span>
-<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">period</span><span class="w"> </span><span class="p">(</span>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">period</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
 <span class="w">    </span><span class="k">state</span><span class="w"> </span><span class="nb">INT</span>
 <span class="p">);</span>
 
-<span class="c1">-- Create the &#39;txn&#39; table</span>
+
 <span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">txn_id</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
 <span class="w">    </span><span class="n">period_id</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<span class="w">    </span><span class="n">employee_id</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
-<span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="w">    </span><span class="n">employee_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
 <span class="p">);</span>
 
-<span class="c1">-- Insert sample data into the &#39;period&#39; table</span>
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="k">period</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">state</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
-
-<span class="c1">-- Insert sample data into the &#39;txn&#39; table</span>
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="p">(</span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">employee_id</span><span class="p">,</span><span class="w"> </span><span class="k">type</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">103</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_OTHER_TYPE&#39;</span><span class="p">);</span>
 
 <span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="k">period</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="k">state</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
 
-<span class="c1">-- Insert additional sample data into the &#39;txn&#39; table</span>
-<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="p">(</span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">employee_id</span><span class="p">,</span><span class="w"> </span><span class="k">type</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_OTHER_TYPE&#39;</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">103</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="mi">104</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_OTHER_TYPE&#39;</span><span class="p">),</span>
-<span class="w">    </span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">105</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">);</span>
-<span class="c1">-- The provided query</span>
-<span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="n">employee_id</span>
-<span class="k">FROM</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">employee_id</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">type</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="p">(</span><span class="n">txn_id</span><span class="p">,</span><span class="w"> </span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">employee_id</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Sam&quot;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Josh&quot;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">103</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Sam&quot;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">104</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Greg&quot;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">105</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Alex&quot;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">106</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;Josh&quot;</span><span class="p">);</span>
+
+
+
+<span class="w">  </span><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">employee_id</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">type</span>
 <span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="k">period</span><span class="w"> </span><span class="n">p</span>
 <span class="w">    </span><span class="k">JOIN</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">period_id</span>
 <span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="k">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
-<span class="p">)</span><span class="w"> </span><span class="n">op</span>
-<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="n">period_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">period_id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="n">employee_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">employee_id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">op</span><span class="p">.</span><span class="k">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="k">type</span>
-<span class="k">WHERE</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="k">type</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
 </code></pre></div>
+
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Period_id</th>
+<th>employee_id</th>
+<th>type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td>sam</td>
+<td>PT_AC_ACC_LEAVE</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td>josh</td>
+<td>PT_AC_ACC_LEAVE</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>sam</td>
+<td>PT_AC_ACC_LEAVE</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td>alex</td>
+<td>PT_AC_ACC_LEAVE</td>
+</tr>
+</tbody>
+</table>
+<p>You can see that it has excluded anyone whose state is greater than 1, namely greg and and a josh. 
+We then select any distinct <code>period_id</code>, <code>op.employee_id</code> from our inner query</p>
+<h2>Left Join</h2>
+<p>First, we need to modify our previous tables to include a type. </p>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">txn_id</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
+<span class="w">    </span><span class="n">period_id</span><span class="w"> </span><span class="nb">INT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">employee_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">128</span><span class="p">),</span>
+<span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">txn</span><span class="w"> </span><span class="p">(</span><span class="n">txn_id</span><span class="p">,</span><span class="w"> </span><span class="n">period_id</span><span class="p">,</span><span class="w"> </span><span class="n">employee_id</span><span class="p">,</span><span class="w"> </span><span class="k">type</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="p">(</span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Sam&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Josh&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">103</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Sam&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;OtherType&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">104</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Greg&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">105</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Alex&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;literallyAnyOtherType&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">106</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Josh&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">107</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Sophie&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;PT_AC_ACC_LEAVE&#39;</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">108</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Emma&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">NULL</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">109</span><span class="p">,</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Liam&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;NULL&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+<p>The left join joins rows where the <code>period_id,</code> <code>employee_id,</code> and <code>type</code> match between the <code>op</code> subquery and the <code>txn</code> table.
+The left join ensures all items from <code>op</code> are added and only matching rows from <code>txn</code> are added.
+The outerquery retrieves rows from the 'op' subquery that do not have a corresponding record in the 'txn' table based on the 'period_id,' 'employee_id,' and 'type' criteria. It selects those rows where 't.type' is NULL, which indicates the absence of matching records in the 'txn' table.</p>
+<p>Running our final completed query gives us these results!
+| period_id | employee_id|
+|--:|---|
+|2| sam| 
+|1|alex| 
+|1|emma|</p>
+<h4>A simpler solution?</h4>
 </section>
         <section id="extras" class="body">
                 <div class="blogroll">
