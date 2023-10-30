@@ -24,7 +24,7 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('Sam Anderson', 'https://wip-porfolio.replit.app/'),
+LINKS = (('Sam Anderson', 'samanderson.tech'),
          ('Findr - a React + AWS + Node, hand drawn website to find flat shares ', 'https://flatmate-findr.replit.app/'),
          ('sa902 github', 'https://github.com/sa902'))
 
