@@ -88,6 +88,8 @@ The outerquery retrieves rows from the 'op' subquery that do not have a correspo
 
 
 Running our final completed query gives us these results!
+
+
 | period_id | employee_id|
 |--:|---|
 |2| sam| 

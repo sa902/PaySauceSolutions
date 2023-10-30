@@ -118,12 +118,29 @@ We then select any distinct <code>period_id</code>, <code>op.employee_id</code> 
 <p>The left join joins rows where the <code>period_id,</code> <code>employee_id,</code> and <code>type</code> match between the <code>op</code> subquery and the <code>txn</code> table.
 The left join ensures all items from <code>op</code> are added and only matching rows from <code>txn</code> are added.
 The outerquery retrieves rows from the 'op' subquery that do not have a corresponding record in the 'txn' table based on the 'period_id,' 'employee_id,' and 'type' criteria. It selects those rows where 't.type' is NULL, which indicates the absence of matching records in the 'txn' table.</p>
-<p>Running our final completed query gives us these results!
-| period_id | employee_id|
-|--:|---|
-|2| sam| 
-|1|alex| 
-|1|emma|</p>
+<p>Running our final completed query gives us these results!</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">period_id</th>
+<th>employee_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">2</td>
+<td>sam</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td>alex</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td>emma</td>
+</tr>
+</tbody>
+</table>
 <h4>A simpler solution?</h4>
 </section>
         <section id="extras" class="body">
